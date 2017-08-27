@@ -1,10 +1,10 @@
 def srvName = 'eureka-service'
-def devUser = 'scaleworks'
-def devHost = '10.202.129.46'
+def relUser = 'scaleworks'
+def relHost = '10.202.129.47'
 def registryUrl = '10.202.129.203:5000'
 def mvnImage = 'maven:3.5.0-jdk-8-alpine'
 def mvnFolder = '/opt/m2'
-def devDockerDaemon = "tcp://${devHost}:2376"
+def relDockerDaemon = "tcp://${relHost}:2376"
 
 pipeline {
     agent any
@@ -40,9 +40,9 @@ pipeline {
         stage('部署Dev环境') {
             steps {
                 sh """
-                    docker -H ${devDockerDaemon} rm -f ${srvName} | true
-                    docker -H ${devDockerDaemon} run -d --name ${srvName} --net=host ${registryUrl}/${srvName}:$BUILD_NUMBER
-                    docker -H ${devDockerDaemon} image prune --force --all --filter until=`date -d '5 day ago' '+%F'`
+                    docker -H ${relDockerDaemon} rm -f ${srvName} | true
+                    docker -H ${relDockerDaemon} run -d --name ${srvName} --net=host ${registryUrl}/${srvName}:$BUILD_NUMBER
+                    docker -H ${relDockerDaemon} image prune --force --all --filter until=`date -d '5 day ago' '+%F'`
                 """
             }
         }
